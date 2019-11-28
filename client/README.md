@@ -1,4 +1,4 @@
-This client side was created by Create React App
+This client side was created using Create React App
 
 Run client side
 ```
