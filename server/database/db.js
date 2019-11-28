@@ -1,10 +1,11 @@
 const mysql = require('mysql');
 
+// Modify database login info here
 const connection = mysql.createConnection({
 	host: 'localhost',
 	user: 'root',
-	password: 'password',
-	database: 'homework'
+	password: '',
+	database: ''
 });
 
 connection.connect();
