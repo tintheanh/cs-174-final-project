@@ -11,11 +11,11 @@ This is the repository of CS 174 project
 Run client side
 ```
 cd client
-npm i && start
+npm i && npm start
 ```
 
 Run server
 ```
 cd server
-npm i && run dev
+npm i && npm run dev
 ```
