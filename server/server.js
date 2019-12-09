@@ -1,20 +1,26 @@
 const express = require('express');
-const cors = require('cors')
-const bodyParser = require('body-parser')
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const requestIp = require('request-ip');
+const dotenv = require('dotenv');
 
+dotenv.config(); // .env configuration
+const constants = require('./utils/constants');
 const user = require('./routes/user');
-
-
 const app = express();
-const port = 5000;
 
-app.use(cors());
-app.use( bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors()); // Cross-Origin Resource Sharing middleware
+app.use(requestIp.mw()); // Client IP middleware
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.use(bodyParser.json({ limit: constants.PAYLOAD_LIMIT }));
+app.use(bodyParser.urlencoded({ limit: constants.PAYLOAD_LIMIT, extended: true }));
 
-app.post('/signup', user.signup);
-app.post('/signin', user.signin);
+app.get('/', (_, res) => res.send('Hello World!'));
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.post('/register', user.register);
+app.post('/login', user.login);
+app.post('/verify', user.verify);
+app.post('/logout', user.logout);
+app.post('/upload', user.upload);
+
+app.listen(constants.PORT, () => console.log(`Listening on port ${constants.PORT}`));
