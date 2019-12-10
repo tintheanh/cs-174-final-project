@@ -6,7 +6,6 @@ This is the repository of CS 174 project
 
 - Anh Nguyen
 - Gaston Garrido
-- Maneek Dhillon
 
 *This project has three modules:*
 - client
