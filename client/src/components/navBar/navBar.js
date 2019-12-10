@@ -36,14 +36,14 @@ class NavBar extends Component {
 	userLink = () => (
 		<ul className="navbar-nav">
 			<li>
-				<Link className="nav-link text-white" to="/profile">
-					Profile
+				<Link className="nav-link text-white" to="/tool">
+					Tool
 				</Link>
 			</li>
-			<li className="nav-item">
-				<span className="nav-link text-white" style={{ cursor: 'pointer' }} onClick={this.logOut}>
-					Logout
-				</span>
+			<li>
+				<Link className="nav-link text-white" to="/config">
+					Config
+				</Link>
 			</li>
 		</ul>
 	);
@@ -60,6 +60,19 @@ class NavBar extends Component {
 					</li>
 					{this.props.userData ? this.userLink() : this.loginRegLink()}
 				</ul>
+				{this.props.userData ? (
+					<ul className="navbar-nav ml-auto">
+						<li>
+							<span
+								className="navbar-text text-white"
+								style={{ cursor: 'pointer' }}
+								onClick={this.logOut}
+							>
+								Logout
+							</span>
+						</li>
+					</ul>
+				) : null}
 			</nav>
 		);
 	}

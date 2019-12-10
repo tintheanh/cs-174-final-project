@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { validateForm } from '../../utils/validation';
-import { signup } from '../../redux/actions/authActions';
+import { validateCredentialsForm } from '../../utils/validation';
+import { register } from '../../redux/actions/authActions';
 
 class Register extends React.Component {
-	state = { username: '', password: '', error: '', warning: '' };
+	state = { username: '', password: '', error: '', warnings: '' };
 
 	onSubmit = (e) => {
 		e.preventDefault();
@@ -15,19 +15,19 @@ class Register extends React.Component {
 			password: this.state.password
 		};
 
-		const fail = validateForm(user); // Client-side validation
+		const fail = validateCredentialsForm(user); // Client-side credentials validation
 
 		if (!fail) {
 			this.props
-				.signup(user)
+				.register(user)
 				.then(() => this.props.history.push('/login'))
-				.catch((err) => this.setState({ error: err.message, warning: '' }));
-		} else this.setState({ warning: fail, error: '' });
+				.catch((err) => this.setState({ error: err.message, warnings: '' }));
+		} else this.setState({ warnings: fail, error: '' });
 	};
 
 	renderWarning = () => {
-		const warnings = this.state.warning.split('\n');
-		if (this.state.warning.length)
+		const warnings = this.state.warnings.split('\n');
+		if (this.state.warnings.length)
 			return warnings.map((warning, i) => {
 				if (warning.length)
 					return (
@@ -57,6 +57,9 @@ class Register extends React.Component {
 							placeholder="Enter username"
 							onChange={(e) => this.setState({ username: e.target.value })}
 						/>
+						<small className="form-text text-muted">
+							Usernames must be at least 5 characters. <br />Only a-z, A-Z, 0-9, - and _ allowed.
+						</small>
 					</div>
 					<div className="form-group">
 						<label>Password</label>
@@ -66,9 +69,12 @@ class Register extends React.Component {
 							placeholder="Password"
 							onChange={(e) => this.setState({ password: e.target.value })}
 						/>
+						<small className="form-text text-muted">
+							Passwords must be at least 6 characters and require one each of a-z, A-Z and 0-9.
+						</small>
 					</div>
 					<input type="submit" className="btn btn-primary" />
-					
+
 					{this.renderWarning()}
 
 					{/* Render error */}
@@ -82,4 +88,4 @@ class Register extends React.Component {
 		);
 	}
 }
-export default connect(null, { signup })(Register);
+export default connect(null, { register })(Register);

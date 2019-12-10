@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { validateForm } from '../../utils/validation';
+import { validateCredentialsForm } from '../../utils/validation';
 import { login } from '../../redux/actions/authActions';
 
 class Login extends Component {
@@ -14,12 +14,12 @@ class Login extends Component {
 			password: this.state.password
 		};
 
-		const fail = validateForm(user); // Client-side validation
+		const fail = validateCredentialsForm(user); // Client-side credentials validation
 
 		if (!fail) {
 			this.props
 				.login(user)
-				.then(() => this.props.history.push('/profile'))
+				.then(() => this.props.history.push('/tool'))
 				.catch((err) => this.setState({ error: err.message, warning: '' }));
 		} else this.setState({ warning: fail, error: '' });
 	};
@@ -69,12 +69,11 @@ class Login extends Component {
 							onChange={(e) => this.setState({ password: e.target.value })}
 						/>
 						<small className="form-text text-muted">
-							Passwords must be at least 6 characters and require one each of a-z, A-Z and
-							0-9.
+							Passwords must be at least 6 characters and require one each of a-z, A-Z and 0-9.
 						</small>
 					</div>
 					<input type="submit" className="btn btn-primary" />
-					
+
 					{this.renderWarning()}
 
 					{/* Render error */}
@@ -89,8 +88,4 @@ class Login extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({
-	userData: state.auth.userData
-});
-
-export default connect(mapStateToProps, { login })(Login);
+export default connect(null, { login })(Login);

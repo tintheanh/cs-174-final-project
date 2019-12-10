@@ -1,19 +1,14 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { verify, upload, clear, clearResult } from '../../redux/actions/authActions';
+import { upload, clear, clearResult } from '../../redux/actions/authActions';
 import { FILE_SIZE_LIMIT } from '../../utils/constants';
 
-class Profile extends Component {
+class Tool extends Component {
 	state = { img: '', error: '' };
 
-	componentDidMount() {
-		this.props.verify().catch((err) => console.warn(err.message));
-	}
-
 	componentWillUnmount() {
-		this.props.clearResult();
+		this.props.clearResult(); // Clear old result when navigating away
 	}
 
 	onSubmit = (e) => {
@@ -33,11 +28,12 @@ class Profile extends Component {
 					this.setState({ error: '' });
 				})
 				.catch((err) => {
-					alert(err.message);
-					if (err.message === 'Session expired. Please login again.') {
+					if (err.message === 'Please login again.') {
+						alert(err.message);
 						this.props.clear();
 						this.props.history.push('/');
 					}
+					console.warn(err.message);
 				});
 		} else {
 			this.setState({ error: 'No image uploaded.' });
@@ -63,7 +59,6 @@ class Profile extends Component {
 	};
 
 	render() {
-		if (!this.props.userData) return <Redirect to="/" />;
 		return (
 			<div className="container" style={{ marginTop: 20 }}>
 				<h3 className="text-center"> {`Welcome ${this.props.userData.username}`}</h3>
@@ -106,4 +101,4 @@ const mapStateToProps = (state) => ({
 	result: state.auth.result
 });
 
-export default connect(mapStateToProps, { verify, upload, clear, clearResult })(Profile);
+export default connect(mapStateToProps, { upload, clear, clearResult })(Tool);

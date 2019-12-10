@@ -11,7 +11,7 @@ class Landing extends React.Component {
 				</h3>
 				{this.props.userData ? (
 					<h5 className="text-center">
-						Please enjoy using the tool at <Link to="/profile">profile</Link>
+						Please enjoy using the tool at <Link to="/tool">tool</Link>
 					</h5>
 				) : (
 					<h5 className="text-center">

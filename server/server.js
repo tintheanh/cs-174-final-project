@@ -22,5 +22,6 @@ app.post('/login', user.login);
 app.post('/verify', user.verify);
 app.post('/logout', user.logout);
 app.post('/upload', user.upload);
+app.post('/update', user.updateFileValues);
 
 app.listen(constants.PORT, () => console.log(`Listening on port ${constants.PORT}`));

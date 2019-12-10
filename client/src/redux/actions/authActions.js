@@ -2,7 +2,7 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
 import { BASE_URL } from '../../utils/constants';
-import { LOGIN, SIGNUP, VERIFY, LOGOUT, UPLOAD, CLEAR_RESULT, CLEAR } from './types';
+import { LOGIN, REGISTER, VERIFY, LOGOUT, UPLOAD, UPDATE, CLEAR_RESULT, CLEAR } from './types';
 
 export const login = (user) => (dispatch) => {
 	return new Promise((resolve, reject) => {
@@ -11,9 +11,15 @@ export const login = (user) => (dispatch) => {
 			.then((res) => {
 				if (res.data) {
 					localStorage.setItem('usertoken', res.data.token);
+					const decoded = jwt.decode(res.data.token);
+					const userData = {
+						username: decoded.username,
+						hash: decoded.hash,
+						fileValues: JSON.parse(decoded.fileValues)
+					};
 					dispatch({
 						type: LOGIN,
-						payload: res.data
+						payload: userData
 					});
 					resolve();
 				} else reject(new Error('Error occured.'));
@@ -44,13 +50,13 @@ export const logout = (userData) => (dispatch) => {
 	});
 };
 
-export const signup = (user) => (dispatch) => {
+export const register = (user) => (dispatch) => {
 	return new Promise((resolve, reject) => {
 		axios
 			.post(`${BASE_URL}/register`, user)
 			.then((_) => {
 				dispatch({
-					type: SIGNUP,
+					type: REGISTER,
 					payload: null
 				});
 				resolve();
@@ -73,7 +79,7 @@ export const verify = () => (dispatch) => {
 				if (res.data) {
 					dispatch({
 						type: VERIFY,
-						payload: res.data.decoded
+						payload: null
 					});
 					resolve();
 				} else {
@@ -87,6 +93,30 @@ export const verify = () => (dispatch) => {
 		} catch (err) {
 			localStorage.clear();
 			reject(new Error('Invalid token.'));
+		}
+	});
+};
+
+export const updateFileValues = (data) => (dispatch) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const res = await axios.post(`${BASE_URL}/update`, data);
+			if (res.data) {
+				dispatch({
+					type: UPDATE,
+					payload: res.data.newFileValues
+				});
+				resolve();
+			} else reject(new Error('Error occured.'));
+		} catch (err) {
+			let error;
+			if (err.response.data.message === 'Invalid input.') {
+				error = new Error(err.response.data.message);
+			} else if (err.response.data.message === 'Not authorized.') {
+				localStorage.clear();
+				error = new Error('Please login again.');
+			}
+			reject(error);
 		}
 	});
 };
@@ -110,7 +140,7 @@ export const upload = (data) => (dispatch) => {
 				error = new Error('Image is invalid.');
 			} else {
 				localStorage.clear();
-				error = new Error('Session expired. Please login again.');
+				error = new Error('Please login again.');
 			}
 			reject(error);
 		}
