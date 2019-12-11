@@ -18,24 +18,24 @@ Each module has its own environment constants. Creating `.env` files and assigni
 *List of needed constants in each `.env`*:
 
 ### **client:**
-```javascript
+```python
 REACT_APP_EXTERNAL_API_URL (server url, e.g., http://localhost:5000)
-REACT_APP_FILE_SIZE_LIMIT (image file size limit in byte to upload, e.g., 10000)
+REACT_APP_FILE_SIZE_LIMIT (uploaded image file size limit in byte, e.g., 10000)
 ```
 
 ### **server:**
-```javascript
+```python
 PORT (e.g., 5000)
 PAYLOAD_LIMIT (request payload size limit e.g., "200mb")
 
-// Salt rounds is recommended using low values, it takes longer to hash with larger rounds
-// https://www.npmjs.com/package/bcrypt#a-note-on-rounds
+# Salt rounds is recommended using low values, it takes longer to hash with larger rounds
+# See https://www.npmjs.com/package/bcrypt#a-note-on-rounds
 SALT_ROUNDS (for password hashing, e.g., 6)
 SALT_TOKEN_ROUNDS (for JWT signing, e.g., 6)
 
-FIXED_SALT (secret salt for user IP & user agent string hashing, preventing JWT hijacking, e.g., "$2b$10$m1VeKF0RKY/EPSPEIGyCY.")
+FIXED_SALT (secret salt for user IP & agent string hashing, preventing fake JWT and JWT hijacking, e.g., "$2b$10$m1VeKF0RKY/EPSPEIGyCY.")
 
-// MYSQL credentials
+# MYSQL credentials
 HOST_DB
 USER_DB
 PASSWORD_DB
@@ -47,7 +47,7 @@ FILE_SIZE_LIMIT (uploaded image size limit in byte, e.g, 10000)
 
 PYTHON_SCRIPT="/absolute/path/to/neural_net.py/"
 
-// Default arguments for training neural net
+# Default arguments for training neural net
 NUM_HIDDEN_LAYERS=2
 WIDTH=100
 ACTIVATION_FUNC="ReLU"
@@ -82,14 +82,12 @@ npm i && npm run dev
 
 ## **Application features**
 ### Secure authentication:
-This application supports basic authentication in the most secure way. Using JWT with hashed payload combined both user IP and user agent string generated from the server prevents JWT hijacking as well as fake JWT presented by malicious user.
+This application supports basic authentication in the most secure way. Using JWT containing hashed payload from both user IP and agent string which is generated from the server preventing JWT hijacking as well as fake JWT presented by malicious user.
 
 #### Code highlight
 ```javascript
 exports.verify = function(req, res) {
 	const { token, username, hash } = req.body;
-
-	// console.log(token + '\n');
 
 	if (!username) {
 		// Bash when body data does not come with username
@@ -105,7 +103,7 @@ exports.verify = function(req, res) {
 	const twoCombinedHash = userIPHashed.concat(userAgentHashed);
 
 	if (hash !== twoCombinedHash) {
-		// Eventhough JWT is stolen
+		// Even though JWT is stolen
 		// if the pass-down hash value is not the same as the hash based on current ip and agent string
 		// cannot break through this security
 		return res.status(403).send({ message: 'Invalid token.' });
@@ -137,12 +135,12 @@ exports.verify = function(req, res) {
 	});
 };
 ```
-Client verification is run in protected routes as well as when client tries to navigate to protected routes or send data to server when using the tool.
+User verification is run in protected routes as well as when unauthorized user tries to navigate to protected routes or send data to server.
 
 ### Image analysis and prediction:
-Registered user can upload their image (carefully validated by both client and server sides) to have it analyzed.
+Registered user can upload their image (carefully validated on both client and server sides) to have it analyzed.
 ![Alt text](images/gif-1.gif?raw=true "App")
 
 ### Neural network configuration:
-Registered user can config their own neural network for better analysis and prediction.
+Registered user can configure their own neural network for better analysis and prediction.
 ![Alt text](images/img-1.jpg?raw=true "App")
