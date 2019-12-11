@@ -1,6 +1,6 @@
 # cs-174-final-project
 
-This is the repository of CS 174 project
+Image prediction application project.
 
 ### **Members:**
 
