@@ -92,7 +92,7 @@ pip install -r requirements.txt
 
 ## **Application features**
 ### Secure authentication:
-This application supports basic authentication in the most secure way. Using JWT containing hashed payload from both user IP and agent string which is generated from the server preventing JWT hijacking as well as fake JWT presented by malicious user.
+This application supports basic authentication in the most secure way. Using JWT containing hashed payload from both user IP and agent string which is generated from the server that can prevent JWT hijacking as well as fake JWT presented by malicious user.
 
 #### Code highlight
 ```javascript
@@ -145,7 +145,7 @@ exports.verify = function(req, res) {
 	});
 };
 ```
-User verification is run in protected routes as well as when unauthorized user tries to navigate to protected routes or send data to server.
+User verification is run in protected routes as well as when unauthorized user tries to navigate to protected routes or send data to the server.
 
 ### Image analysis and prediction:
 Registered user can upload their image (carefully validated on both client and server sides) to have it analyzed.
