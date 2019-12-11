@@ -28,8 +28,11 @@ REACT_APP_FILE_SIZE_LIMIT (image file size limit in byte to upload, e.g., 10000)
 PORT (e.g., 5000)
 PAYLOAD_LIMIT (request payload size limit e.g., "200mb")
 
-SALT_ROUNDS (for password hashing, e.g., 30)
-SALT_TOKEN_ROUNDS (for JWT signing, e.g., 60)
+// Salt rounds is recommended using low values, it takes longer to hash with larger rounds
+// https://www.npmjs.com/package/bcrypt#a-note-on-rounds
+SALT_ROUNDS (for password hashing, e.g., 6)
+SALT_TOKEN_ROUNDS (for JWT signing, e.g., 6)
+
 FIXED_SALT (secret salt for user IP & user agent string hashing, preventing JWT hijacking, e.g., "$2b$10$m1VeKF0RKY/EPSPEIGyCY.")
 
 // MYSQL credentials
