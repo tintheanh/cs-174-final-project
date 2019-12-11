@@ -137,7 +137,7 @@ exports.verify = function(req, res) {
 
 	if (!username) {
 		// Bash when body data does not come with username
-		return res.status(403).send({ decoded: null, message: 'Invalid token.' });
+		return res.status(403).send({ message: 'Invalid token.' });
 	}
 
 	const userIP = req.clientIp;

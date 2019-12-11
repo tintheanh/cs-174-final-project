@@ -76,3 +76,70 @@ Run server
 cd server
 npm i && npm run dev
 ```
+
+## **Application features**
+### Secure authentication:
+This application supports basic authentication in the most secure way. Using JWT with hashed payload combined both user IP and user agent string generated from the server prevents JWT hijacking as well as fake JWT presented by malicious user.
+
+#### Code highlight
+```javascript
+exports.verify = function(req, res) {
+	const { token, username, hash } = req.body;
+
+	// console.log(token + '\n');
+
+	if (!username) {
+		// Bash when body data does not come with username
+		return res.status(403).send({ message: 'Invalid token.' });
+	}
+
+	const userIP = req.clientIp;
+	const userAgent = req.headers['user-agent'];
+
+	const userIPHashed = bcrypt.hashSync(userIP, constants.FIXED_SALT);
+	const userAgentHashed = bcrypt.hashSync(userAgent, constants.FIXED_SALT);
+
+	const twoCombinedHash = userIPHashed.concat(userAgentHashed);
+
+	if (hash !== twoCombinedHash) {
+		// Eventhough JWT is stolen
+		// if the pass-down hash value is not the same as the hash based on current ip and agent string
+		// cannot break through this security
+		return res.status(403).send({ message: 'Invalid token.' });
+	}
+
+	const sql = 'SELECT * FROM users WHERE username=?';
+
+	// node-mysql library automatically performs escaping (sanitizing) when using '?' placeholder.
+	// See https://github.com/felixge/node-mysql#escaping-query-values
+	db.query(sql, [ username ], (err, result) => {
+		if (err) {
+			console.log(err.sqlMessage);
+			return res.status(500).send({ message: 'Server error occured.' });
+		}
+		if (!result.length) {
+			// Username does not exist in DB
+			return res.status(403).send({ message: 'Invalid token.' });
+		}
+
+		const { tokenSalt } = result[0]; // Retrieve tokenSalt from row
+		try {
+			const decoded = jwt.verify(token, tokenSalt);
+			if (decoded.username === username) return res.status(200).send({ message: 'Valid token.' });
+
+			return res.status(403).send({ message: 'Invalid token.' });
+		} catch (err) {
+			return res.status(403).send({ message: 'Invalid token.' });
+		}
+	});
+};
+```
+Client verification is run in protected routes as well as when client tries to navigate to protected routes or send data to server when using the tool.
+
+### Image analysis and prediction:
+Registered user can upload their image (carefully validated by both client and server sides) to have it analyzed.
+![Alt text](images/gif-1.gif?raw=true "App")
+
+### Neural network configuration:
+Registered user can config their own neural network for better analysis and prediction.
+![Alt text](images/img-1.jpg?raw=true "App")
