@@ -12,6 +12,10 @@ Image prediction application project.
 - server
 - Neural_Network - credit to [ggmonx](https://github.com/ggmonx) for the module
 
+## **Prerequisite**
+- Node.js
+- Python version >= 3.0
+
 ## **Setup**
 Each module has its own environment constants. Creating `.env` files and assigning constants to each file before running.
 
@@ -78,6 +82,12 @@ Run server
 ```
 cd server
 npm i && npm run dev
+```
+
+Install python dependencies
+```
+cd Neural_Network
+pip install -r requirements.txt
 ```
 
 ## **Application features**
