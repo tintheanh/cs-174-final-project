@@ -39,7 +39,7 @@ SALT_TOKEN_ROUNDS (for JWT signing, e.g., 6)
 
 FIXED_SALT (secret salt for user IP & agent string hashing, preventing fake JWT and JWT hijacking, e.g., "$2b$10$m1VeKF0RKY/EPSPEIGyCY.")
 
-# MYSQL credentials
+# MySQL credentials
 HOST_DB
 USER_DB
 PASSWORD_DB
@@ -65,7 +65,7 @@ EPOCHS=50
 BASE_PATH="/absolute/path/to/folder/Neural_Network"
 ```
 
-### **MYSQL user table structure:**
+### **MySQL user table structure:**
 | username    | password     | salt        | tokenSalt   | fileValues   | neuralNetFile (id) |
 |-------------|--------------|-------------|-------------|--------------|--------------------|
 | VARCHAR(32) | VARCHAR(255) | VARCHAR(32) | VARCHAR(32) | VARCHAR(128) | VARCHAR(64)        |
