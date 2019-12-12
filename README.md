@@ -121,7 +121,7 @@ exports.verify = function(req, res) {
 
 	const sql = 'SELECT * FROM users WHERE username=?';
 
-	// node-mysql library automatically performs escaping (sanitizing) when using '?' placeholder.
+	// node-mysql library internally performs escaping (sanitizing) when using '?' placeholder.
 	// See https://github.com/felixge/node-mysql#escaping-query-values
 	db.query(sql, [ username ], (err, result) => {
 		if (err) {
