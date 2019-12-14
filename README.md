@@ -23,21 +23,21 @@ Each module has its own environment constants. Creating `.env` files and assigni
 
 ### **client:**
 ```python
-REACT_APP_EXTERNAL_API_URL (server url, e.g., http://localhost:5000)
-REACT_APP_FILE_SIZE_LIMIT (uploaded image file size limit in byte, e.g., 10000)
+REACT_APP_EXTERNAL_API_URL #server url, e.g., "http://localhost:5000"
+REACT_APP_FILE_SIZE_LIMIT #uploaded image file size limit in byte, e.g., 10000
 ```
 
 ### **server:**
 ```python
-PORT (e.g., 5000)
-PAYLOAD_LIMIT (request payload size limit e.g., "200mb")
+PORT #e.g., 5000
+PAYLOAD_LIMIT #request payload size limit e.g., "200mb"
 
 # Salt rounds is recommended using low values, it takes longer to hash with larger rounds
 # See https://www.npmjs.com/package/bcrypt#a-note-on-rounds
-SALT_ROUNDS (for password hashing, e.g., 6)
-SALT_TOKEN_ROUNDS (for JWT signing, e.g., 6)
+SALT_ROUNDS #for password hashing, e.g., 6
+SALT_TOKEN_ROUNDS #for JWT signing, e.g., 6
 
-FIXED_SALT (secret salt for user IP & agent string hashing, preventing fake JWT and JWT hijacking, e.g., "$2b$10$m1VeKF0RKY/EPSPEIGyCY.")
+FIXED_SALT #secret salt for user IP & agent string hashing, preventing fake JWT and JWT hijacking, e.g., "$2b$10$m1VeKF0RKY/EPSPEIGyCY."
 
 # MySQL credentials
 HOST_DB
@@ -45,9 +45,9 @@ USER_DB
 PASSWORD_DB
 DATABASE
 
-JWT_EXPIRATION (e.g., "10m")
+JWT_EXPIRATION #e.g., "10m"
 
-FILE_SIZE_LIMIT (uploaded image size limit in byte, e.g, 10000)
+FILE_SIZE_LIMIT #uploaded image size limit in byte, e.g, 10000
 
 PYTHON_SCRIPT="/absolute/path/to/neural_net.py/"
 

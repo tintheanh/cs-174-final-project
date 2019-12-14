@@ -25,7 +25,8 @@ export const login = (user) => (dispatch) => {
 				} else reject(new Error('Error occured.'));
 			})
 			.catch((err) => {
-				reject(new Error(err.response.data.message));
+				if (err.response) reject(new Error(err.response.data.message));
+				else reject(new Error('Server error occured.'));
 			});
 	});
 };
@@ -46,7 +47,10 @@ export const logout = (userData) => (dispatch) => {
 					resolve();
 				} else reject(new Error('Error occured.'));
 			})
-			.catch((err) => reject(new Error(err.response.data.message)));
+			.catch((err) => {
+				if (err.response) reject(new Error(err.response.data.message));
+				else reject(new Error('Server error occured.'));
+			});
 	});
 };
 
@@ -62,7 +66,8 @@ export const register = (user) => (dispatch) => {
 				resolve();
 			})
 			.catch((err) => {
-				reject(new Error(err.response.data.message));
+				if (err.response) reject(new Error(err.response.data.message));
+				else reject(new Error('Server error occured.'));
 			});
 	});
 };
