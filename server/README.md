@@ -5,5 +5,5 @@ Activate MySQL before running server
 Run server
 ```
 cd server
-npm i && npm run dev
+npm install && npm run dev
 ```
