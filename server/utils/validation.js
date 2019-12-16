@@ -5,6 +5,13 @@ const validateUsername = (field) => {
 	return true;
 };
 
+const validateEmail = (field) => {
+	if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(field)) {
+		return true;
+	}
+	return false;
+};
+
 const validatePassword = (field) => {
 	if (field === '') return false;
 	else if (field.length < 6) return false;
@@ -52,9 +59,14 @@ const validateEpochs = (field) => {
 	return true;
 };
 
+exports.validateImage = function(imageURL) {
+	const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+	return base64regex.test(imageURL);
+}
+
 exports.validatFileValuesForm = function(data) {
 	const { num_hidden_layers, width, activation_func, learning_rate, dropout, epochs } = data;
-	
+
 	const isNumHiddenLayersValie = validateNumHiddenLayers(num_hidden_layers);
 	const isWidthValid = validateWidth(width);
 	const isActivationFuncValid = validateActivationFunc(activation_func);
@@ -74,9 +86,14 @@ exports.validatFileValuesForm = function(data) {
 	return false;
 };
 
-exports.validateCredentialsForm = function(data) {
+exports.validateCredentialsForm = function(data, isLogin) {
 	const isUsernameValid = validateUsername(data.username);
 	const isPasswordValid = validatePassword(data.password);
+	if (!isLogin) {
+		const isEmailValid = validateEmail(data.email);
+		if (isUsernameValid && isEmailValid && isPasswordValid) return true;
+		return false;
+	}
 
 	if (isUsernameValid && isPasswordValid) return true;
 	return false;

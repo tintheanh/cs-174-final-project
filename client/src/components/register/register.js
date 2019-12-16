@@ -5,17 +5,18 @@ import { validateCredentialsForm } from '../../utils/validation';
 import { register } from '../../redux/actions/authActions';
 
 class Register extends React.Component {
-	state = { username: '', password: '', error: '', warnings: '' };
+	state = { username: '', emai: '', password: '', error: '', warnings: '' };
 
 	onSubmit = (e) => {
 		e.preventDefault();
 
 		const user = {
 			username: this.state.username,
+			email: this.state.email,
 			password: this.state.password
 		};
 
-		const fail = validateCredentialsForm(user); // Client-side credentials validation
+		const fail = validateCredentialsForm(user, false); // Client-side credentials validation
 
 		if (!fail) {
 			this.props
@@ -60,6 +61,15 @@ class Register extends React.Component {
 						<small className="form-text text-muted">
 							Usernames must be at least 5 characters. <br />Only a-z, A-Z, 0-9, - and _ allowed.
 						</small>
+					</div>
+					<div className="form-group">
+						<label>Email</label>
+						<input
+							className="form-control"
+							type="text"
+							placeholder="Enter email"
+							onChange={(e) => this.setState({ email: e.target.value })}
+						/>
 					</div>
 					<div className="form-group">
 						<label>Password</label>

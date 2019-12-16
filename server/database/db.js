@@ -13,6 +13,7 @@ connection.connect((err) => {
 
 	const createUsers = `CREATE TABLE IF NOT EXISTS users(
 		username VARCHAR(32) NOT NULL UNIQUE,
+		email VARCHAR(32) NOT NULL UNIQUE,
 		password VARCHAR(255) NOT NULL,
 		salt VARCHAR(32) NOT NULL,
 		tokenSalt VARCHAR(32) NOT NULL,

@@ -66,9 +66,9 @@ BASE_PATH="/absolute/path/to/folder/Neural_Network"
 ```
 
 ### **MySQL user table structure:**
-| username    | password     | salt        | tokenSalt   | fileValues   | neuralNetFile (id) |
-|-------------|--------------|-------------|-------------|--------------|--------------------|
-| VARCHAR(32) | VARCHAR(255) | VARCHAR(32) | VARCHAR(32) | VARCHAR(128) | VARCHAR(64)        |
+| username    | email       | password     | salt        | tokenSalt   | fileValues   | neuralNetFile (id) |
+|-------------|-------------|--------------|-------------|-------------|--------------|--------------------|
+| VARCHAR(32) | VARCHAR(32) | VARCHAR(255) | VARCHAR(32) | VARCHAR(32) | VARCHAR(128) | VARCHAR(64)        |
 
 
 ## **How to run**

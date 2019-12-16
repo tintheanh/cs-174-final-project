@@ -14,7 +14,7 @@ class Login extends Component {
 			password: this.state.password
 		};
 
-		const fail = validateCredentialsForm(user); // Client-side credentials validation
+		const fail = validateCredentialsForm(user, true); // Client-side credentials validation
 
 		if (!fail) {
 			this.props

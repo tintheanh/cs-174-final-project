@@ -10,10 +10,11 @@ const validation = require('../utils/validation');
 exports.register = function(req, res) {
 	const credentials = {
 		username: req.body.username,
+		email: req.body.email,
 		password: req.body.password
 	};
 
-	const isValid = validation.validateCredentialsForm(credentials); // Server-side credentials validation
+	const isValid = validation.validateCredentialsForm(credentials, false); // Server-side credentials validation
 	if (!isValid) return res.status(403).send({ message: 'Invalid input.' });
 
 	let sql = 'SELECT * FROM users WHERE username=?';
@@ -28,55 +29,66 @@ exports.register = function(req, res) {
 		if (result.length) {
 			return res.status(406).send({ message: 'User already existed.' });
 		}
-		const salt = bcrypt.genSaltSync(constants.SALT_ROUNDS); // Salt for password
-		const tokenSalt = bcrypt.genSaltSync(constants.SALT_TOKEN_ROUNDS); // Salt for JWT
-		const neuralNetFile = uuidv4(); // neural net file name
+		sql = 'SELECT * FROM users WHERE email=?';
 
-		const passwordHashed = bcrypt.hashSync(credentials.password, salt);
-
-		// Generate default neural net file
-		const fileValues = JSON.stringify({
-			num_hidden_layers: Number(constants.NUM_HIDDEN_LAYERS),
-			width: Number(constants.WIDTH),
-			activation_func: constants.ACTIVATION_FUNC,
-			learning_rate: Number(constants.LEARNING_RATE),
-			dropout: Number(constants.DROPOUT),
-			epochs: Number(constants.EPOCHS)
-		});
-
-		sql =
-			'INSERT INTO users (username, password, salt, tokenSalt, fileValues, neuralNetFile) VALUES (?, ?, ?, ?, ?, ?)';
-
-		db.query(
-			sql,
-			[ credentials.username, passwordHashed, salt, tokenSalt, fileValues, neuralNetFile ],
-			(err, result) => {
-				if (err) {
-					console.log(err.sqlMessage);
-					return res.status(500).send({ message: 'Server error occured.' });
-				}
-				if (result) {
-					// Run python script to create neural net file
-					const pythonProcess = spawn('python3', [
-						constants.PYTHON_SCRIPT,
-						constants.NUM_HIDDEN_LAYERS,
-						constants.WIDTH,
-						constants.ACTIVATION_FUNC,
-						constants.LEARNING_RATE,
-						constants.DROPOUT,
-						constants.EPOCHS,
-						neuralNetFile
-					]);
-
-					pythonProcess.stdout.on('data', (data) => {
-						console.log('Neural net created ' + data.toString());
-					});
-
-					return res.status(200).send({ message: 'Register successfully.' });
-				}
+		db.query(sql, [ credentials.email ], (err, result) => {
+			if (err) {
+				console.log(err.sqlMessage);
 				return res.status(500).send({ message: 'Server error occured.' });
 			}
-		);
+			if (result.length) {
+				return res.status(406).send({ message: 'Email is already used.' });
+			}
+			const salt = bcrypt.genSaltSync(constants.SALT_ROUNDS); // Salt for password
+			const tokenSalt = bcrypt.genSaltSync(constants.SALT_TOKEN_ROUNDS); // Salt for JWT
+			const neuralNetFile = uuidv4(); // neural net file name
+
+			const passwordHashed = bcrypt.hashSync(credentials.password, salt);
+
+			// Generate default neural net file
+			const fileValues = JSON.stringify({
+				num_hidden_layers: Number(constants.NUM_HIDDEN_LAYERS),
+				width: Number(constants.WIDTH),
+				activation_func: constants.ACTIVATION_FUNC,
+				learning_rate: Number(constants.LEARNING_RATE),
+				dropout: Number(constants.DROPOUT),
+				epochs: Number(constants.EPOCHS)
+			});
+
+			sql =
+				'INSERT INTO users (username, email, password, salt, tokenSalt, fileValues, neuralNetFile) VALUES (?, ?, ?, ?, ?, ?, ?)';
+
+			db.query(
+				sql,
+				[ credentials.username, credentials.email, passwordHashed, salt, tokenSalt, fileValues, neuralNetFile ],
+				(err, result) => {
+					if (err) {
+						console.log(err.sqlMessage);
+						return res.status(500).send({ message: 'Server error occured.' });
+					}
+					if (result) {
+						// Run python script to create neural net file
+						const pythonProcess = spawn('python3', [
+							constants.PYTHON_SCRIPT,
+							constants.NUM_HIDDEN_LAYERS,
+							constants.WIDTH,
+							constants.ACTIVATION_FUNC,
+							constants.LEARNING_RATE,
+							constants.DROPOUT,
+							constants.EPOCHS,
+							neuralNetFile
+						]);
+
+						pythonProcess.stdout.on('data', (data) => {
+							console.log('Neural net created ' + data.toString());
+						});
+
+						return res.status(200).send({ message: 'Register successfully.' });
+					}
+					return res.status(500).send({ message: 'Server error occured.' });
+				}
+			);
+		});
 	});
 };
 
@@ -86,7 +98,7 @@ exports.login = function(req, res) {
 		password: req.body.password
 	};
 
-	const isValid = validation.validateCredentialsForm(credentials); // Server-side credentials validation
+	const isValid = validation.validateCredentialsForm(credentials, true); // Server-side credentials validation
 	if (!isValid) return res.status(403).send({ message: 'Invalid input.' });
 
 	const userIP = req.clientIp;
@@ -301,6 +313,10 @@ exports.upload = function(req, res) {
 		// Receive no image
 		return res.status(406).send({ message: 'No image uploaded.' });
 	}
+
+	// Check if image is valid
+	const isValidImage = validation.validateImage(image);
+	if (!isValidImage) return res.status(406).send({ message: 'Invalid image.' });
 
 	const sql = 'SELECT * FROM users WHERE username=?';
 

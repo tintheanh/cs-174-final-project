@@ -5,6 +5,13 @@ const validateUsername = (field) => {
 	return '';
 };
 
+const validateEmail = (field) => {
+	if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(field)) {
+		return '';
+	}
+	return 'Invalid email'
+};
+
 const validatePassword = (field) => {
 	if (field === '') return 'No Password was entered.\n';
 	else if (field.length < 6) return 'Passwords must be at least 6 characters.\n';
@@ -36,7 +43,7 @@ const validateLearningRate = (rate, activationFunc) => {
 		if (rate < 0.1 || rate > 1) return 'Sigmoid only accepts learning rate values from 0.1 to 1.\n';
 	}
 	return '';
-}
+};
 
 const validateDropout = (dropout, activationFunc) => {
 	if (activationFunc === 'ReLU') {
@@ -46,15 +53,16 @@ const validateDropout = (dropout, activationFunc) => {
 		if (dropout !== 0) return 'Sigmoid only accepts dropout 0.\n';
 	}
 	return '';
-}
+};
 
 const validateEpochs = (field) => {
 	if (field < 10 || field > 150) return 'Epochs only accepts values from 10 to 150.\n';
 	return '';
 };
 
-export const validateCredentialsForm = (data) => {
+export const validateCredentialsForm = (data, isLogin) => {
 	let fail = validateUsername(data.username);
+	if (!isLogin) fail += validateEmail(data.email);
 	fail += validatePassword(data.password);
 
 	return fail;
@@ -67,7 +75,7 @@ export const validatFileValuesForm = (data) => {
 	fail += validateActivationFunc(activation_func);
 	fail += validateLearningRate(learning_rate, activation_func);
 	fail += validateDropout(dropout, activation_func);
-	fail += validateEpochs(epochs)
+	fail += validateEpochs(epochs);
 
 	return fail;
-}
+};
